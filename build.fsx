@@ -53,9 +53,9 @@ Target "Test" (fun _ ->
 
 // Build order
 "Clean"
-  ==> "Build"
   ==> "BuildTests"
   ==> "Test"
+  ==> "Build"
   ==> "Deploy"
 
 // start build
