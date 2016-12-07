@@ -10,7 +10,7 @@ The default task is to compile and run the tests.
 To bulid executables run:
 
 - Windows: `build.cmd build`
-- OS X / Linux: `./build.sh`
+- OS X / Linux: `./build.sh build`
 
 ## Executables
 
