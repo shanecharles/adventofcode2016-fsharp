@@ -4,6 +4,17 @@ open NUnit.Framework
 open day07
 
 [<TestFixture>]
+type Day07Part2ValidSslTests () =
+    [<Datapoints>]
+    member x.ValidSsls = [|"aba[bab]xyz"; "aaa[kek]eke"; "zazbz[bzb]cdb"|]
+
+    [<Theory>]
+    member x.``tryIpSsl with a SSL supporting IP should return Some IP`` ip =
+        let expected = Some ip
+        let result = ip |> tryIpSsl
+        Assert.That(result, Is.EqualTo expected) 
+
+[<TestFixture>]
 type Day07Tests () = 
     let sample1 = "abba[mnop]qrst"
     let sample2 = "abcd[bddb]xyyx"
@@ -14,21 +25,6 @@ type Day07Tests () =
 
     let part2_data1 = "aba[bab]xyz"
     let part2_data2 = "xyx[xyx]xyx"
-    let part2_data3 = "aaa[kek]eke"
-    let part2_data4 = "zazbz[bzb]cdb"
-
-    [<Test>]
-    member x.``tryIpSsl with ip 'zazbz[bzb]cdb' should return Some ip`` () =
-        let expected = Some part2_data4
-        let result = part2_data4 |> tryIpSsl
-        Assert.That(result, Is.EqualTo expected)
-
-    [<Test>]
-    member x.``tryIpSsl with ip 'aaa[kek]eke' should return Some ip`` () =
-        let expected = Some part2_data3
-        let result = part2_data3 |> tryIpSsl
-        Assert.That(result, Is.EqualTo expected)
-
 
     [<Test>]
     member x.``getSsls with 'xyx[xyx]xyx' should result in a non empty sequence`` () =
@@ -38,12 +34,6 @@ type Day07Tests () =
     member x.``tryIpSsl with ip 'xyx[xyx]xyx' should return None`` () =
         let expected = None
         let result = part2_data2 |> tryIpSsl
-        Assert.That(result, Is.EqualTo expected)
-
-    [<Test>]
-    member x.``tryIpSsl with ip 'aba[bab]xyz' should return Some ip`` () =
-        let expected = Some part2_data1
-        let result = part2_data1 |> tryIpSsl
         Assert.That(result, Is.EqualTo expected)
 
     [<Test>]
