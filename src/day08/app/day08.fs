@@ -37,8 +37,7 @@ type Display (width,height) =
             (fun i y -> display.[0..width-1,y] |> Seq.chunkBySize 5
                         |> Seq.toList
                         |> List.iter (Array.iter (printable >> printf "%c") >> (fun _ -> printf " "))
-                        printfn ""
-                        )
+                        printfn "")
 let performOperation (disp : Display) = function
     | Rect (x,y)   -> disp.TurnOnSection (x,y)
     | Row  (y,n)   -> disp.RotateRow (y,n)
