@@ -1,21 +1,19 @@
 module day08
 
-let isLit = ((=)1)
-
 type Operation =
     | Rect of int * int
     | Row of int * int
     | Column of int * int
 
 type Display (width,height) =
-    let display = Array2D.init width height (fun x y -> 0)
+    let display = Array2D.init width height (fun x y -> false)
 
     let applyShift n f = Seq.concat >> Seq.take n >> Seq.toList >> List.iteri f
     member this.Display = display
     member this.TurnOnSection (x, y) =
         for x' in {0 .. (x - 1)} do
         for y' in {0 .. (y - 1)} do
-            display.[x',y'] <- 1
+            display.[x',y'] <- true
 
     member this.RotateColumn (x, shift) =
         let origin = height - shift
@@ -30,8 +28,17 @@ type Display (width,height) =
         |> applyShift width (fun x v -> display.[x,y] <- v)
 
     member this.LitPixelCount () =
-        display |> Seq.cast<int> |> Seq.filter isLit |> Seq.length
+        display |> Seq.cast<bool> |> Seq.filter id |> Seq.length
 
+    member this.Print () =
+        let printable = function true -> 'O'
+                               | _    -> ' '
+        {0 .. height-1} |> Seq.iteri 
+            (fun i y -> display.[0..width-1,y] |> Seq.chunkBySize 5
+                        |> Seq.toList
+                        |> List.iter (Array.iter (printable >> printf "%c") >> (fun _ -> printf " "))
+                        printfn ""
+                        )
 let performOperation (disp : Display) = function
     | Rect (x,y)   -> disp.TurnOnSection (x,y)
     | Row  (y,n)   -> disp.RotateRow (y,n)
@@ -53,6 +60,8 @@ let main argv =
     let d1 = Display(50, 6)
     let performOps = performOperation d1
     ops |> List.iter performOps
-    d1.LitPixelCount () |> printfn "Day 8 part 1 result: %i" 
-    d1.Display
+    d1.LitPixelCount () |> printfn "Day 8 part 1 result: %i"
+    printfn "Day 8 part 2 result: "
+    d1.Print ()
+
     0 // return an integer exit code
