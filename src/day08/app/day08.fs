@@ -1,10 +1,5 @@
 module day08
 
-type Operation =
-    | Rect of int * int
-    | Row of int * int
-    | Column of int * int
-
 type Display (width,height) =
     let display = Array2D.init width height (fun x y -> false)
 
@@ -39,6 +34,10 @@ type Display (width,height) =
                         |> List.iter (Array.iter (printable >> printf "%c") >> (fun _ -> printf " "))
                         printfn "")
 
+type Operation =
+    | Rect of int * int
+    | Row of int * int
+    | Column of int * int
 let performOperation (disp : Display) = function
     | Rect (x,y)   -> disp.TurnOnSection (x,y)
     | Row  (y,n)   -> disp.RotateRow (y,n)
