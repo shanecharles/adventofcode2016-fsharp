@@ -8,7 +8,7 @@ type Operation =
 type Display (width,height) =
     let display = Array2D.init width height (fun x y -> false)
 
-    let applyShift n f = Seq.concat >> Seq.take n >> Seq.toList >> List.iteri f
+    let applyShift f = Seq.concat >> Seq.toList >> List.iteri f
     member this.Display = display
     member this.TurnOnSection (x, y) =
         for x' in {0 .. (x - 1)} do
@@ -17,15 +17,15 @@ type Display (width,height) =
 
     member this.RotateColumn (x, shift) =
         let origin = height - shift
-        seq { yield display.[x, origin .. (height - 1)] 
-              yield display.[x, 0 .. origin] } 
-        |> applyShift height (fun y v -> display.[x,y] <- v)
+        seq { yield display.[x, origin ..] 
+              yield display.[x, .. origin - 1] } 
+        |> applyShift (fun y v -> display.[x,y] <- v)
     
     member this.RotateRow (y,shift) =
         let origin = width - shift
-        seq { yield display.[origin .. (width - 1), y]
-              yield display.[0 .. origin,y] } 
-        |> applyShift width (fun x v -> display.[x,y] <- v)
+        seq { yield display.[origin .., y]
+              yield display.[.. origin - 1, y] } 
+        |> applyShift (fun x v -> display.[x,y] <- v)
 
     member this.LitPixelCount () =
         display |> Seq.cast<bool> |> Seq.filter id |> Seq.length
@@ -62,5 +62,4 @@ let main argv =
     d1.LitPixelCount () |> printfn "Day 8 part 1 result: %i"
     printfn "Day 8 part 2 result: "
     d1.Print ()
-
     0 // return an integer exit code
