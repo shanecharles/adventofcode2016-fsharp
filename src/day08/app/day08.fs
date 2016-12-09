@@ -31,13 +31,14 @@ type Display (width,height) =
         display |> Seq.cast<bool> |> Seq.filter id |> Seq.length
 
     member this.Print () =
-        let printable = function true -> 'O'
+        let printable = function true -> '0'
                                | _    -> ' '
         {0 .. height-1} |> Seq.iteri 
-            (fun i y -> display.[0..width-1,y] |> Seq.chunkBySize 5
+            (fun i y -> display.[0.., y] |> Seq.chunkBySize 5
                         |> Seq.toList
                         |> List.iter (Array.iter (printable >> printf "%c") >> (fun _ -> printf " "))
                         printfn "")
+
 let performOperation (disp : Display) = function
     | Rect (x,y)   -> disp.TurnOnSection (x,y)
     | Row  (y,n)   -> disp.RotateRow (y,n)
