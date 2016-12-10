@@ -62,7 +62,7 @@ let lengthV2 : Read list -> int64 = length decompressV2Marker
 [<EntryPoint>]
 let main argv =
     let file = argv |> Seq.head
-    let input = IO.File.ReadAllText(file).Replace("\n","").Replace(" ","") |> parseInput
+    let input = IO.File.ReadLines(file) |> Seq.head |> parseInput
     input |> lengthV1
     |> printfn "Day 9 part 1 result: %d"
 
