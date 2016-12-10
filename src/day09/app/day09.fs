@@ -10,10 +10,6 @@ let parseMarker (marker : string) =
     |> function chars :: reps :: _ -> (chars, reps)
               | _                  -> (0L,0L)
 
-type Segments =
-    | Compressed of int * char seq
-    | Uncompressed of char seq
-
 type Read = 
     | Regular of char list
     | OpenMarker of char list
@@ -39,8 +35,6 @@ let folder (h :: t) c =
 
 let parseInput data = 
     data |> Seq.fold folder [Regular []]
-
-
 
 let length mCounter segments = 
     segments |> Seq.map (function Regular cs           -> int64 (cs |> Seq.length)
