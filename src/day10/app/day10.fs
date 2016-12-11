@@ -57,5 +57,9 @@ let main argv =
                                   | Bot {Values = vs} -> vs = [17;61]
                                   | _                 -> false)
     |> (fun (Bot {Id = bid}) -> printfn "Day 10 part 1 result: %s" (bid |> Seq.skip 1 |> System.String.Concat))
-
+    network |> Seq.choose (fun n -> match n with 
+                                    | Output {Id = oid; Value = v} when oid = "o0" || oid = "o1" || oid = "o2" -> Some v
+                                    | _                                                                     -> None)
+    |> Seq.reduce (*)
+    |> printfn "Day 10 part 2 result: %d"
     0 // return an integer exit code

@@ -26,6 +26,7 @@ They each take one command line argument, which is in most cases the input file 
 - `day07.exe file_name`
 - `day08.exe file_name`
 - `day09.exe file_name`
+- `day10.exe file_name`
 
 ### Note
 
