@@ -4,7 +4,7 @@ open System.Text.RegularExpressions
 
 type Registers = { a: int; b: int; c: int; d: int }
 
-let initRegisters () = {a=0; b=0; c=0; d=0}
+let initRegisters = {a=0; b=0; c=0; d=0}
 let updateRegister regs r v = match r with 
                               | 'a' -> { regs with a = v }
                               | 'b' -> { regs with b = v }
@@ -18,7 +18,7 @@ let getRegister regs = function
                        | _   -> regs.d
 
 let addRegister regs r v =
-    getRegister regs r |> (fun rv -> rv + v) |> updateRegister regs r
+    getRegister regs r |> ((+) v) |> updateRegister regs r
 
 type Instruction = 
     | CopyValue of int * char
@@ -39,11 +39,11 @@ let executeInstruction (index, regs) =
            | JumpRegister (r, v)    -> (if getRegister regs r = 0 then inc index
                                         else index + v), regs
 
-let runProgram (instructions : Instruction []) =
+let runProgram registers (instructions : Instruction []) =
     let rec execute ((index, _) as state) =
         if index >= instructions.Length then state
         else instructions.[index] |> executeInstruction state |> execute
-    execute (0,initRegisters ()) |> snd 
+    execute (0, registers) |> snd 
 
 let (|RegexMatch|_|) pattern input = 
   let m = Regex.Match(input, pattern)
@@ -67,7 +67,13 @@ let main argv =
                   |> Seq.filter (not << System.String.IsNullOrEmpty)
                   |> Seq.map parseInstruction
                   |> Array.ofSeq
-    program |> runProgram
+
+                  
+    program |> runProgram initRegisters
     |> (fun {a = aVal} -> aVal)
     |> printfn "Day 12 part 1 result: %d"
+
+    program |> runProgram {initRegisters with c = 1}
+    |> (fun {a = aVal} -> aVal)
+    |> printfn "Day 12 part 2 result: %d"
     0 // return an integer exit code

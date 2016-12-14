@@ -16,7 +16,7 @@ type day12tests () =
     [<Test>]
     member this.``Register 'a' with value 1 and decrementing it should result in register 'a' having 0`` () =
         let expected = 0
-        let result = (Decrement 'a') |> executeInstruction (1,{initRegisters () with a=1}) |> snd
+        let result = (Decrement 'a') |> executeInstruction (1,{initRegisters with a=1}) |> snd
         Assert.That(result.a, Is.EqualTo expected)
        
 
@@ -24,7 +24,7 @@ type day12tests () =
     member this.``Parsing and executing the sample data should result in register 'a' having 42`` () =
         let expected = 42
         let result = sampleData |> List.map parseInstruction |> Seq.toArray
-                     |> runProgram
+                     |> runProgram initRegisters
         Assert.That(result.a, Is.EqualTo expected)
 
     [<Test>]
