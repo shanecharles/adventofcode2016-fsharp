@@ -30,9 +30,27 @@ let shortestPath number dest =
 
     path [[(1,1)]]
 
+let pointsVisited number iterations = 
+    let openPath = isPath number
+    let cache = new System.Collections.Generic.HashSet<int*int>()
+    let addToCache ns = ns |> Array.iter (cache.Add >> ignore); ns
+    let getNextSteps = Seq.collect (getSteps >> Array.filter openPath)
+                       >> Seq.filter (cache.Contains >> not)
+                       >> Seq.toArray
+    cache.Add (1,1) |> ignore
+    let rec loop count positions =
+        if count <= 0 then cache |> Seq.toArray
+        else positions |> getNextSteps
+             |> addToCache
+             |> loop (count-1)
+    loop 50 [|(1,1)|]
+
 [<EntryPoint>]
 let main argv =
     let number = argv.[0] |> int
     shortestPath number (31,39) |> Seq.length |> ((+) -1)
     |> printfn "Day 13 part 1 result: %d"
+
+    pointsVisited number 50 |> Array.length
+    |> printfn "Day 13 part 2 result: %d"
     0 // return an integer exit code
