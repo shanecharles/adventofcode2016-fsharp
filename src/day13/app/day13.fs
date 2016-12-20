@@ -1,7 +1,5 @@
 module day13
 
-type Point = int * int
-
 let isPath number (x,y) =
     x*x + 3*x + 2*x*y + y + y*y + number
     |> (fun n -> System.Convert.ToString(n,2))
@@ -18,7 +16,6 @@ let advance pathCheck steps =
     |> function [||] -> None
               | ns   -> Some ns
     |> Option.bind (fun ns -> Some [ for n in ns -> (n :: steps) ])
-    
 
 let shortestPath number dest =
     let openPath = isPath number
