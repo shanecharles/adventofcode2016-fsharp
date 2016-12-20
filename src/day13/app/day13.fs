@@ -2,32 +2,37 @@ module day13
 
 type Point = int * int
 
-let isWall number (x,y) =
+let isPath number (x,y) =
     x*x + 3*x + 2*x*y + y + y*y + number
     |> (fun n -> System.Convert.ToString(n,2))
     |> Seq.filter ((=)'1')
     |> Seq.length
-    |> (fun n -> n % 2 = 1) 
+    |> (fun n -> n % 2 = 0) 
 
-let getSteps (x,y) = seq { for i in -1 .. 1 do 
-                           for j in -1 .. 1 do
-                           if (i <> 0 || j <> 0) && x+i >=0 && y+j >=0 then yield (x+i,y+j) }
+let getSteps (x,y) = [|(x-1,y); (x+1,y); (x,y-1); (x,y+1)|] |> Array.filter (fun (x',y') -> x' >= 0 && y' >= 0)
+let advance pathCheck steps = 
+    match steps with
+    | []          -> [||]
+    | [h]         -> h |> getSteps |> Array.filter pathCheck
+    | h :: t -> h |> getSteps |> Array.filter (fun x -> pathCheck x && t |> Seq.exists ((=)x) |> not)
+    |> function [||] -> None
+              | ns   -> Some ns
+    |> Option.bind (fun ns -> Some [ for n in ns -> (n :: steps) ])
+    
 
-let findPaths number dest =
-    let isWall' = isWall number
-    let rec step ((pos :: rest) as acc) =
-        seq { if pos = dest then yield acc
-              else 
-                let next = getSteps pos 
-                           |> Seq.filter (fun s -> s |> (not << isWall') 
-                                                || rest |> Seq.forall (((=)s) >> not))
-                for n in next do
-                    printfn "%A" n
-                    yield! step (n :: acc) 
-        }
-    step [(1,1)]
+let shortestPath number dest =
+    let openPath = isPath number
+    let rec path steps =
+        match steps |> List.tryFind (fun (h :: _) -> h = dest) with
+        | Some ss -> ss
+        | None    ->
+            steps |> List.choose (advance openPath) |> List.concat |> path
+
+    path [[(1,1)]]
 
 [<EntryPoint>]
 let main argv =
-    printfn "%A" argv
+    let number = argv.[0] |> int
+    shortestPath number (31,39) |> Seq.length |> ((+) -1)
+    |> printfn "Day 13 part 1 result: %d"
     0 // return an integer exit code
