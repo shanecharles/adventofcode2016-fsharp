@@ -21,6 +21,28 @@ let part1 nElves =
                    | es    -> es |> steal |> loop
     loop (firstRound nElves)
 
+let cross elves =
+    let rec loop index = function
+        | [| e |] -> e
+        | es      -> 
+            let mid = es.Length / 2
+            let nth = (index + mid) % es.Length
+            es.[nth] <- -1
+            let es' = es |> Array.filter ((<>) -1)
+            let index' = if es'.Length <= index then 0
+                         elif nth <= index then index
+                         else index + 1
+            loop index' es'
+    loop 0 elves
+
+let part2 elveCount = 
+    let l = log (float elveCount) / log 3.0 |> floor |> int
+    let n = pown 3 l
+    let m = elveCount - n
+    if m = 0 then n
+    elif m <= n then m
+    else n + (m - n) * 2
+
 
 [<EntryPoint>]
 let main argv =
