@@ -61,6 +61,19 @@ let rotatePosition x (data : char []) =
     let y = data |> Array.findIndex ((=) x)
     rotate -(y + 1 + if y >= 4 then 1 else 0) data
 
+let reverseRotatePosition x (data : char []) =
+    let movement = 
+        match data |> Array.findIndex ((=) x) with 
+        | 0 -> 9
+        | 1 -> 1
+        | 2 -> 6
+        | 3 -> 2
+        | 4 -> 7
+        | 5 -> 3
+        | 6 -> 8
+        | 7 -> 4
+    rotate movement data
+
 let reversePositions x y (data : char []) =
     let hi = max x y
     let low = min x y
@@ -88,9 +101,17 @@ let applyInstruction data =
     | Reverse (x,y)       -> reversePositions x y
     >> function f -> f data
 
+let reverseInstruction data =
+    function
+    | Rotate x         -> rotate -x data
+    | RotatePosition x -> reverseRotatePosition x data
+    | Move (x, y)      -> movePosition y x data
+    | ins              -> applyInstruction data ins
+
 let applyTransforms data = Seq.fold applyInstruction data
                            >> System.String.Concat
 
+let reverseTransforms data = Seq.fold reverseInstruction data >> System.String.Concat
 let scanTransforms data = Seq.scan applyInstruction data
 let parseInputFile = File.ReadAllLines >> Array.map parseInstruction
 
@@ -100,4 +121,7 @@ let main argv =
     let data = [|'a'..'h'|]
     input |> applyTransforms data
     |> printfn "Day 21 part 1 result: %s"
+
+    input |> Array.rev |> reverseTransforms ("fbgdceah" |> Seq.toArray)
+    |> printfn "Day 21 part 2 result: %s"
     0 // return an integer exit code
