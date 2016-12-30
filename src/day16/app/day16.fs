@@ -6,25 +6,25 @@ let mapChar = function '1' -> 1uy
 let mapInputString : string -> byte [] = Seq.map mapChar >> Seq.toArray
 let flipBit x = (x + 1uy) % 2uy 
 
-let flipBitsAndReverse : byte seq -> byte seq = Seq.map flipBit >> Seq.rev
+let flipBitsAndReverse : byte [] -> byte [] = Array.map flipBit >> Array.rev
 
-let curveData (size, data) =
-    (size * 2 + 1), [| yield! data 
-                       yield 0uy 
-                       yield! flipBitsAndReverse data |]
+let curveData data = [| yield! data 
+                        yield 0uy 
+                        yield! flipBitsAndReverse data |]
 
 let pairChecksum : byte [] -> byte = Array.sum >> function 1uy -> 0uy
                                                          | _   -> 1uy
 
-let expandData limit data = 
-    let rec fill = function size, ds when limit <= size -> ds |> Array.take limit
-                          | data'                       -> data' |> curveData |> fill
-    fill (data |> Seq.length, data)
+let expandData limit (data : byte []) = 
+    let rec fill (ds : byte []) = 
+            if ds.Length >= limit then ds |> Array.take limit
+            else ds |> curveData |> fill
+    fill data
 
 let computeChecksum data =
     let computeChecksum' = Array.chunkBySize 2 >> Array.map pairChecksum
-    let rec checksum d = 
-        if d |> Seq.length |> (fun l -> l % 2 = 1)
+    let rec checksum (d : byte []) = 
+        if d.Length % 2 = 1
         then d
         else d |> computeChecksum' |> checksum
     data |> computeChecksum' |> checksum

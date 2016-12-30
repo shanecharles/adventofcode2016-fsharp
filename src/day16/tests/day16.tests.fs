@@ -51,25 +51,25 @@ type Day16Tests() =
     [<Test>]
     member this.``Given curveData with [1] should return 3 for result size`` () =
         let expected = 3
-        let result, _  = (1, [1uy]) |> curveData
-        Assert.That(result, Is.EqualTo expected)
+        let result  = [|1uy|] |> curveData
+        Assert.That(result.Length, Is.EqualTo expected)
     
     [<Test>]
     member this.``Given curveData with [1] should return [1;0;0]`` () =
-        let expected = [1uy; 0uy; 0uy]
-        let _, result  = (1, [1uy]) |> curveData
+        let expected = [|1uy; 0uy; 0uy|]
+        let result  = [|1uy|] |> curveData
         Assert.That(result |> Seq.toList, Is.EqualTo expected)
 
     [<Test>]
     member this.``Given flipBitsAndReverse [1;0;1] should result in [0;1;0]`` () =
-        let expected = [0uy; 1uy; 0uy]
-        let result = [1uy; 0uy; 1uy] |> flipBitsAndReverse
+        let expected = [|0uy; 1uy; 0uy|]
+        let result = [|1uy; 0uy; 1uy|] |> flipBitsAndReverse
         Assert.That(result, Is.EqualTo expected)
     
     [<Test>]
     member this.``Given flipBitsAndReverse [1;1;1] should result in [0;0;0]`` () =
-        let expected = [0uy; 0uy; 0uy]
-        let result = [1uy; 1uy; 1uy] |> flipBitsAndReverse
+        let expected = [|0uy; 0uy; 0uy|]
+        let result = [|1uy; 1uy; 1uy|] |> flipBitsAndReverse
         Assert.That(result, Is.EqualTo expected)
     
     [<Test>]
