@@ -52,4 +52,7 @@ let main argv =
     input |> part1
     |> formatResult
     |> printfn "Day 19 part 1 result: %s"
+
+    input |> part2
+    |> printfn "Day 19 part 2 result: %d"
     0 // return an integer exit code
