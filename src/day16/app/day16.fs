@@ -9,9 +9,9 @@ let flipBit x = (x + 1uy) % 2uy
 let flipBitsAndReverse : byte seq -> byte seq = Seq.map flipBit >> Seq.rev
 
 let curveData (size, data) =
-    (size * 2 + 1), seq { yield! data 
-                          yield 0uy 
-                          yield! flipBitsAndReverse data} |> Seq.toArray
+    (size * 2 + 1), [| yield! data 
+                       yield 0uy 
+                       yield! flipBitsAndReverse data |]
 
 let pairChecksum : byte [] -> byte = Array.sum >> function 1uy -> 0uy
                                                          | _   -> 1uy
