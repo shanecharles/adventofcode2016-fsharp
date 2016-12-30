@@ -34,6 +34,7 @@ They each take one command line argument, which is in most cases the input file 
 - `day16.exe puzzle_input`
 - `day18.exe puzzle_input`
 - `day20.exe puzzle_input`
+- `day21.exe file_name`
 
 ### Note
 
